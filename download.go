@@ -397,6 +397,10 @@ func (f *File) downloadPartial(ctx context.Context, resumeable bool, idx int, st
 
 	fh.Seek(0, 0)
 }
+// BaseName returns the file Name
+func (f *File) BaseName() string {
+	return f.baseName
+}
 
 // Stat returns the FileInfo structure describing file(s). If there is an error, it will be of type *PathError.
 func (f *File) Stat() (os.FileInfo, error) {
