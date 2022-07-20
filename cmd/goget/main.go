@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"io"
 	"log"
-
 	"os"
 
-	download "github.com/joeybloggs/go-download"
+	"github.com/joeybloggs/go-download"
 	"github.com/vbauerster/mpb"
 )
 
