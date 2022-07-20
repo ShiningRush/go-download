@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -119,6 +120,10 @@ func OpenContext(ctx context.Context, url string, options *Options) (*File, erro
 		log.Printf("notice: unexpected HEAD response code '%d', proceeding with download.\n", resp.StatusCode)
 		err = f.download(ctx)
 	} else {
+		if fName := getFileNameFromHeader(resp.Header); fName != "" {
+			f.baseName = fName
+		}
+
 		f.size = resp.ContentLength
 
 		if t := resp.Header.Get("Accept-Ranges"); t == "bytes" {
@@ -134,6 +139,15 @@ func OpenContext(ctx context.Context, url string, options *Options) (*File, erro
 	}
 
 	return f, nil
+}
+
+func getFileNameFromHeader(header http.Header) string {
+	if cd := header.Get("Content-Disposition"); cd != "" {
+		if idx := strings.Index(cd, "filename="); idx > 0 {
+			return cd[idx+len("filename="):]
+		}
+	}
+	return ""
 }
 
 func (f *File) download(ctx context.Context) error {
@@ -192,6 +206,10 @@ func (f *File) download(ctx context.Context) error {
 
 	f.Reader = fh
 	f.modTime = time.Now()
+
+	if fName := getFileNameFromHeader(resp.Header); fName != "" {
+		f.baseName = fName
+	}
 
 	return nil
 }
@@ -388,7 +406,7 @@ func (f *File) Stat() (os.FileInfo, error) {
 	}
 
 	return &fileInfo{
-		name:    filepath.Base(f.url),
+		name:    f.baseName,
 		size:    f.size,
 		mode:    fileMode,
 		modTime: f.modTime,
