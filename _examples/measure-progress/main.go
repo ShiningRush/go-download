@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 
-	download "github.com/joeybloggs/go-download"
+	download "github.com/shiningrush/go-download"
 	"github.com/vbauerster/mpb"
 )
 

@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/joeybloggs/go-download"
+	"github.com/shiningrush/go-download"
 	"github.com/vbauerster/mpb"
 )
 

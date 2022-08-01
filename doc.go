@@ -2,14 +2,14 @@
 Package download provides a library for interruptable, resumable download
 acceleration with automatic Accept-Ranges support.
 
-see all examples https://github.com/joeybloggs/go-download/tree/master/examples
+see all examples https://github.com/shiningrush/go-download/tree/master/examples
 
 	package main
 
 	import (
 		"log"
 
-		download "github.com/joeybloggs/go-download"
+		download "github.com/shiningrush/go-download"
 	)
 
 	func main() {

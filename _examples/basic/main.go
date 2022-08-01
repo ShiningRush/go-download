@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	download "github.com/joeybloggs/go-download"
+	download "github.com/shiningrush/go-download"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/joeybloggs/go-download
+module github.com/shiningrush/go-download
 
 go 1.17
 
