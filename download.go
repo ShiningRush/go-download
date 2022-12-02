@@ -175,7 +175,7 @@ func (f *File) download(ctx context.Context) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return &InvalidResponseCode{got: resp.StatusCode, expected: http.StatusOK}
+		return NewInvalidResponseCode(resp.StatusCode, http.StatusOK, resp.Body)
 	}
 
 	f.dir, err = ioutil.TempDir("", defaultDir)
@@ -374,7 +374,7 @@ func (f *File) downloadPartial(ctx context.Context, resumeable bool, idx int, st
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusPartialContent {
-		err = &InvalidResponseCode{got: resp.StatusCode, expected: http.StatusPartialContent}
+		err = NewInvalidResponseCode(resp.StatusCode, http.StatusPartialContent, resp.Body)
 		return
 	}
 
@@ -397,6 +397,7 @@ func (f *File) downloadPartial(ctx context.Context, resumeable bool, idx int, st
 
 	fh.Seek(0, 0)
 }
+
 // BaseName returns the file Name
 func (f *File) BaseName() string {
 	return f.baseName
