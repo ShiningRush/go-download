@@ -176,7 +176,7 @@ func TestBadOptions(t *testing.T) {
 
 	url = server.URL + "/testdata/good-head-bad-partial"
 
-	expected = "Invalid response code, received '404' expected '206'"
+	expected = "Invalid response code, received '404' expected '206', body:[read body failed: unexpected EOF]"
 
 	_, err = Open(url, nil)
 	if err == nil || err.Error() != expected {

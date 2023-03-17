@@ -34,6 +34,15 @@ type Options struct {
 	Proxy       ProxyFn
 	Client      ClientFn
 	Request     RequestFn
+	WorkDir     string
+}
+
+func (opt *Options) GetWorkDir() string {
+	if opt == nil {
+		return ""
+	}
+
+	return opt.WorkDir
 }
 
 // RequestFn allows for additional information, such as http headers, to the http request
@@ -178,7 +187,7 @@ func (f *File) download(ctx context.Context) error {
 		return NewInvalidResponseCode(resp.StatusCode, http.StatusOK, resp.Body)
 	}
 
-	f.dir, err = ioutil.TempDir("", defaultDir)
+	f.dir, err = ioutil.TempDir(f.options.GetWorkDir(), defaultDir)
 	if err != nil {
 		return err
 	}
@@ -222,7 +231,11 @@ func (f *File) downloadRangeBytes(ctx context.Context) (err error) {
 
 	var resume bool
 
-	f.dir = filepath.Join(os.TempDir(), defaultDir+f.generateHash())
+	workDir := os.TempDir()
+	if f.options.GetWorkDir() != "" {
+		workDir = f.options.WorkDir
+	}
+	f.dir = filepath.Join(workDir, fmt.Sprintf("%s_%s_%s", defaultDir, f.generateHash(), time.Now().Format("20060102150405")))
 
 	if _, err = os.Stat(f.dir); os.IsNotExist(err) {
 		err = os.Mkdir(f.dir, fileMode) // only owner and group have RWX access
