@@ -154,7 +154,8 @@ func OpenContext(ctx context.Context, url string, options *Options) (*File, erro
 func getFileNameFromHeader(header http.Header) string {
 	if cd := header.Get("Content-Disposition"); cd != "" {
 		if idx := strings.Index(cd, "filename="); idx > 0 {
-			return cd[idx+len("filename="):]
+			fn := cd[idx+len("filename="):]
+			return strings.Trim(fn, "\"")
 		}
 	}
 	return ""
