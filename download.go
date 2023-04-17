@@ -19,6 +19,7 @@ import (
 const (
 	defaultGoroutines = 10
 	defaultDir        = "go-download"
+	defaultDirPartial = "go-download-partial"
 )
 
 var (
@@ -231,11 +232,10 @@ func (f *File) downloadRangeBytes(ctx context.Context) (err error) {
 
 	var resume bool
 
-	workDir := os.TempDir()
-	if f.options.GetWorkDir() != "" {
-		workDir = f.options.WorkDir
+	f.dir, err = ioutil.TempDir(f.options.GetWorkDir(), defaultDirPartial)
+	if err != nil {
+		return err
 	}
-	f.dir = filepath.Join(workDir, fmt.Sprintf("%s_%s_%s", defaultDir, f.generateHash(), time.Now().Format("20060102150405")))
 
 	if _, err = os.Stat(f.dir); os.IsNotExist(err) {
 		err = os.Mkdir(f.dir, fileMode) // only owner and group have RWX access
