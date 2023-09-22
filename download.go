@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -93,15 +94,20 @@ func Open(url string, options *Options) (*File, error) {
 
 // OpenContext downloads and opens the file(s) downloaded by the given url and is cancellable using the provided context.
 // The context provided must be non-nil
-func OpenContext(ctx context.Context, url string, options *Options) (*File, error) {
+func OpenContext(ctx context.Context, downloadUrl string, options *Options) (*File, error) {
 
 	if ctx == nil {
 		panic("nil context")
 	}
 
+	pUrl, err := url.Parse(downloadUrl)
+	if err != nil {
+		return nil, fmt.Errorf("parse download url failed: %w", err)
+	}
+
 	f := &File{
-		url:      url,
-		baseName: filepath.Base(url),
+		url:      downloadUrl,
+		baseName: filepath.Base(pUrl.Path),
 		options:  options,
 	}
 
